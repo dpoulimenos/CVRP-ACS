@@ -489,6 +489,78 @@ namespace kagv {
                 }
 
 
+
+                List<int> custofveh = new List<int>();
+                List<int> capofveh = new List<int>();
+                int custuntilnow = 0;
+                int capuntilnow = 0;
+                
+
+                for (int i = 1; i < touriteration.Length; i++)
+                {
+
+                    
+                    if (touriteration[i] == 0)
+                    {
+                        custofveh.Add(custuntilnow);
+                        capofveh.Add(capuntilnow);
+                        capuntilnow = 0;
+                        custuntilnow = 0;
+                    }
+                    else
+                    {
+                        custuntilnow += 1;
+                        capuntilnow = capuntilnow + demand[touriteration[i]];
+                    }
+                    
+                    
+                }
+
+
+                int[,] alltours = new int[vehiclesrequired, SizeCustomers];
+
+                int curvehi = 0;
+                int tripvehi = 0;
+               for(int i = 1; i < touriteration.Length-1; i++)
+                {
+                    tripvehi += 1;
+                    if (touriteration[i] == 0)
+                    {
+                        curvehi += 1;
+                        tripvehi = 0;
+                        alltours[curvehi, tripvehi] = touriteration[i];
+                        
+
+
+                    }
+                    else
+                    {
+                        alltours[curvehi, tripvehi] = touriteration[i];
+                    }
+                }
+
+
+               for (int i=0;i<vehiclesrequired;i++)
+                {
+                    for(int j = 1; j < SizeCustomers; j++)
+                    {
+                        for(int l=0;l<vehiclesrequired;l++)
+                        {
+                            if(capofveh[l]+demand[alltours[i,j]]<=Capacity)
+                            {
+
+                            }
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
                 
                 int improve = 0;
                 while (improve <= 500) {
