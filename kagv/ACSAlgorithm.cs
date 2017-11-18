@@ -517,41 +517,61 @@ namespace kagv {
                 }
 
 
-                int[,] alltours = new int[vehiclesrequired, SizeCustomers];
+                List<List<int>> vehicletours = new List<List<int>>();
+                int veh = 0;
+                vehicletours.Add(new List<int>());
+                vehicletours[0].Add(0);
 
-                int curvehi = 0;
-                int tripvehi = 0;
-               for(int i = 1; i < touriteration.Length-1; i++)
+                for (int i=1;i<touriteration.Length-1;i++)
                 {
-                    tripvehi += 1;
                     if (touriteration[i] == 0)
                     {
-                        curvehi += 1;
-                        tripvehi = 0;
-                        alltours[curvehi, tripvehi] = touriteration[i];
-                        
-
-
+                        vehicletours[veh].Add(0);
+                        veh += 1;
+                        vehicletours.Add( new List<int>());
+                        vehicletours[veh].Add(0);
                     }
                     else
                     {
-                        alltours[curvehi, tripvehi] = touriteration[i];
+                        vehicletours[veh].Add(touriteration[i]);
                     }
+                }
+                vehicletours[vehiclesrequired-1].Add(0);
+
+                List<int> LoadofVeh = new List<int>();
+                for(int i = 0; i < vehiclesrequired; i++)
+                {
+                    int loadofvehicle = 0;
+                    for(int j = 0; j < vehicletours[i].Count; j++)
+                    {
+                        loadofvehicle = loadofvehicle + demand[vehicletours[i][j]];
+                    }
+                    LoadofVeh.Add(loadofvehicle);
                 }
 
 
-               for (int i=0;i<vehiclesrequired;i++)
-                {
-                    for(int j = 1; j < SizeCustomers; j++)
-                    {
-                        for(int l=0;l<vehiclesrequired;l++)
-                        {
-                            if(capofveh[l]+demand[alltours[i,j]]<=Capacity)
-                            {
+                double Templength =Math.Pow(BestLength,10);
 
-                            }
+                for (int i = 0; i < vehiclesrequired; i++)
+                {
+                    int tour1 ;
+                    int tour2 ;
+                    do
+                    {
+                        tour1 = RandomNumber.Between(0, vehiclesrequired - 1);
+                        tour2 = RandomNumber.Between(0, vehiclesrequired - 1);
+                    } while (tour1 != tour2);
+
+                    for(int j = 0; j < vehicletours[tour1].Count; j++)
+                    {
+                        for(int l = 0; l < vehicletours[tour2].Count; l++)
+                        {
+                            int temp = vehicletours[tour1][j];
+                            
                         }
                     }
+
+
                 }
 
 
@@ -561,7 +581,6 @@ namespace kagv {
 
 
 
-                
                 int improve = 0;
                 while (improve <= 500) {
                     double NewDistance = 0;
