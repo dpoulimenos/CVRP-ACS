@@ -549,35 +549,165 @@ namespace kagv {
                     LoadofVeh.Add(loadofvehicle);
                 }
 
-
+                
                 double Templength =Math.Pow(BestLength,10);
+                bool foundswap = true;
+                int tries = 0;
 
-                for (int i = 0; i < vehiclesrequired; i++)
+                do
                 {
-                    int tour1 ;
-                    int tour2 ;
+
+                    foundswap = false;
+                    tries += 1;
+
+
+                    int tour1;
+                    int tour2;
                     do
                     {
                         tour1 = RandomNumber.Between(0, vehiclesrequired - 1);
                         tour2 = RandomNumber.Between(0, vehiclesrequired - 1);
-                    } while (tour1 != tour2);
+                    } while (tour1 == tour2);
 
-                    for(int j = 0; j < vehicletours[tour1].Count; j++)
+
+                    List<int> fromtour = new List<int>();
+                    List<int> totour = new List<int>();
+
+                    for(int i=0;i<vehicletours[tour1].Count;i++)
                     {
-                        for(int l = 0; l < vehicletours[tour2].Count; l++)
+                        int temp = vehicletours[tour1][i];
+                        fromtour.Add(temp);
+                    }
+                    for (int i = 0; i < vehicletours[tour2].Count; i++)
+                    {
+                        int temp = vehicletours[tour2][i];
+                        totour.Add(temp);
+                    }
+
+                    double lengthtour1 = 0;
+                    double lengthtour2 = 0;
+
+                    for (int v = 0; v < fromtour.Count - 1; v++)
+                    {
+                        lengthtour1 = lengthtour1 + CustomersDistance[fromtour[v], fromtour[v + 1]];
+                    }
+                    for (int v = 0; v < totour.Count - 1; v++)
+                    {
+                        lengthtour2 = lengthtour2 + CustomersDistance[totour[v], totour[v + 1]];
+                    }
+
+                    for (int j = 1; j < vehicletours[tour1].Count-1; j++)
+                    {
+                        for (int l = 1; l < vehicletours[tour2].Count-1; l++)
                         {
-                            int temp = vehicletours[tour1][j];
-                            
+
+                            if (LoadofVeh[tour2] - demand[totour[l]] + demand[fromtour[j]] <= Capacity && LoadofVeh[tour1] + demand[totour[l]] - demand[fromtour[j]] <= Capacity)
+                            {
+                                int temp = fromtour[j];
+                                fromtour[j]= totour[l];
+                                totour[l]=temp;
+
+                                double newlengthtour1 = 0;
+                                double newlengthtour2 = 0;
+
+                                for (int v = 0; v < fromtour.Count - 1; v++)
+                                {
+                                    newlengthtour1 = newlengthtour1 + CustomersDistance[fromtour[v], fromtour[v + 1]];
+                                }
+                                for (int v = 0; v < totour.Count - 1; v++)
+                                {
+                                    newlengthtour2 = newlengthtour2 + CustomersDistance[totour[v], totour[v + 1]];
+                                }
+
+                                if (newlengthtour1 < lengthtour1 && newlengthtour2 < lengthtour2)
+                                {
+                                    List<int> temptour1 = new List<int>(fromtour);
+                                    List<int> temptour2 = new List<int>(totour);
+                                    vehicletours[tour1]= temptour1;
+                                    vehicletours[tour2] = temptour2;
+
+                                    LoadofVeh.Clear();
+
+                                    for (int v = 0; v < vehiclesrequired; v++)
+                                    {
+                                        int loadofvehicle = 0;
+                                        for (int z = 0; z < vehicletours[v].Count; z++)
+                                        {
+                                            loadofvehicle = loadofvehicle + demand[vehicletours[v][z]];
+                                        }
+                                        LoadofVeh.Add(loadofvehicle);
+                                    }
+
+                                    foundswap = true;
+                                    tries = 0;
+
+                                }
+
+                                fromtour.Clear();
+                                totour.Clear();
+
+                                for (int i = 0; i < vehicletours[tour1].Count; i++)
+                                {
+                                    int temp2 = vehicletours[tour1][i];
+                                    fromtour.Add(temp2);
+                                }
+                                for (int i = 0; i < vehicletours[tour2].Count; i++)
+                                {
+                                    int temp2 = vehicletours[tour2][i];
+                                    totour.Add(temp2);
+                                }
+
+                            }
+
+                            if (foundswap == true)
+                            {
+                                break;
+                            }
+
+                        }
+                        if (foundswap == true)
+                        {
+                            break;
                         }
                     }
 
 
+                } while (foundswap == true || tries<vehiclesrequired);
+
+
+                LoadofVeh.Clear();
+
+                for (int v = 0; v < vehiclesrequired; v++)
+                {
+                    int loadofvehicle = 0;
+                    for (int z = 0; z < vehicletours[v].Count; z++)
+                    {
+                        loadofvehicle = loadofvehicle + demand[vehicletours[v][z]];
+                    }
+                    LoadofVeh.Add(loadofvehicle);
                 }
 
+                
+                int counttrip = 0;
+                for(int i = 0; i < vehiclesrequired; i++)
+                {
+                    touriteration[counttrip] = 0;
+                    counttrip += 1;
+                    for (int j = 1; j < vehicletours[i].Count-1; j++)
+                    {
+                        touriteration[counttrip] = vehicletours[i][j];
 
+                            counttrip += 1;
+                        
+                        
+                    }
+                }
+                LengthIteration = 0;
 
-
-
+                for(int i = 0; i < touriteration.Length - 1; i++)
+                {
+                    LengthIteration = LengthIteration + CustomersDistance[touriteration[i],touriteration[i+1]];
+                }
 
 
 
