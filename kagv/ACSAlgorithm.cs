@@ -657,6 +657,64 @@ namespace kagv {
                                     totour.Add(temp2);
                                 }
 
+
+
+                            }else if(LoadofVeh[tour2] + demand[fromtour[j]] <= Capacity && fromtour.Count>3)
+                            {
+                                int temp = fromtour[j];
+                                totour.Insert(l, temp);
+                                fromtour.Remove(temp);
+
+                                double newlengthtour1 = 0;
+                                double newlengthtour2 = 0;
+
+                                for (int v = 0; v < fromtour.Count - 1; v++)
+                                {
+                                    newlengthtour1 = newlengthtour1 + CustomersDistance[fromtour[v], fromtour[v + 1]];
+                                }
+                                for (int v = 0; v < totour.Count - 1; v++)
+                                {
+                                    newlengthtour2 = newlengthtour2 + CustomersDistance[totour[v], totour[v + 1]];
+                                }
+
+                                if (newlengthtour1 + newlengthtour2 <= lengthtour1 + lengthtour2)
+                                {
+                                    List<int> temptour1 = new List<int>(fromtour);
+                                    List<int> temptour2 = new List<int>(totour);
+                                    vehicletours[tour1] = temptour1;
+                                    vehicletours[tour2] = temptour2;
+
+                                    LoadofVeh.Clear();
+
+                                    for (int v = 0; v < vehiclesrequired; v++)
+                                    {
+                                        int loadofvehicle = 0;
+                                        for (int z = 0; z < vehicletours[v].Count; z++)
+                                        {
+                                            loadofvehicle = loadofvehicle + demand[vehicletours[v][z]];
+                                        }
+                                        LoadofVeh.Add(loadofvehicle);
+                                    }
+
+                                    foundswap = true;
+                                    tries = 0;
+
+                                }
+                                fromtour.Clear();
+                                totour.Clear();
+
+                                for (int i = 0; i < vehicletours[tour1].Count; i++)
+                                {
+                                    int temp2 = vehicletours[tour1][i];
+                                    fromtour.Add(temp2);
+                                }
+                                for (int i = 0; i < vehicletours[tour2].Count; i++)
+                                {
+                                    int temp2 = vehicletours[tour2][i];
+                                    totour.Add(temp2);
+                                }
+
+
                             }
 
                             if (foundswap == true)
@@ -672,7 +730,7 @@ namespace kagv {
                     }
 
 
-                } while (foundswap == true || tries<vehiclesrequired);
+                } while (foundswap == true || tries<vehiclesrequired*2);
 
 
                 LoadofVeh.Clear();
@@ -777,7 +835,7 @@ namespace kagv {
                     }
                 }
 
-                Temperature = Temperature * 0.999;
+                Temperature = Temperature * 0.9999;
 
 
                 for (int i = 0; i < t.GetLength(0); i++)
