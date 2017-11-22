@@ -71,37 +71,44 @@ namespace kagv {
 
 
             int[] demand = new int[] {0,
-19,
-21,
-6,
-19,
-7,
-12,
-16,
-6,
-16,
-8,
-14,
-21,
-16,
+5,
+24,
 3,
-22,
-18,
-19,
-1,
-24,
-8,
-12,
-4,
-8,
-24,
-24,
-2,
 20,
+26,
+23,
 15,
-2,
+3,
+20,
+16,
+9,
+21,
+3,
+24,
 14,
-9};
+6,
+6,
+13,
+5,
+3,
+3,
+20,
+16,
+22,
+10,
+12,
+20,
+24,
+6,
+1,
+2,
+13,
+7,
+6,
+24,
+19,
+4,
+7};
 
             int sumdemand = demand.Sum();
             double extratrips = double.NaN;
@@ -186,7 +193,7 @@ namespace kagv {
             NBUnvisited.Remove(0);
             NBUnvisited.Remove(Startingnode);
 
-            if (load >= 100)
+            if (load >= Capacity)
             {
                 NextNode = 0;
                 load = 0;
@@ -221,7 +228,7 @@ namespace kagv {
             while (listempty == false) {
                 count = count + 1;
                 min = 100000000;
-                if (load >= 100)
+                if (load >= Capacity)
                 {
                     NextNode = 0;
                     load = 0;
@@ -301,7 +308,7 @@ namespace kagv {
                     for (int i = 0; i < RandomUnvisited.Count; i++)
                     {
                         int Next = RandomNumber.Between(0, RandomUnvisited.Count - 1);
-                        if (load + demand[RandomUnvisited[Next]] <= 100)
+                        if (load + demand[RandomUnvisited[Next]] <= Capacity)
                         {
                             foundnode = 1;
                             Randomtour[countrandom] = RandomUnvisited[Next];
@@ -730,7 +737,7 @@ namespace kagv {
                     }
 
 
-                } while (foundswap == true || tries<vehiclesrequired*2);
+                } while (foundswap == true || tries<vehiclesrequired*10);
 
 
                 LoadofVeh.Clear();
